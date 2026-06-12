@@ -46,9 +46,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:2rem 3rem;display:fl
 /* ── HERO TITLE — with inverse-color halo around the word ── */
 .hero-title{
   font-size:clamp(4.5rem,11vw,10rem);font-weight:700;line-height:.9;letter-spacing:-.03em;
-  opacity:0;animation:fu 1.2s ease 1s forwards;
+  opacity:0;
   position:relative;
+  transition:opacity 1s ease;
 }
+.hero-title.show{opacity:1}
 .hero-title::before{
   content:'';
   position:absolute;
@@ -73,47 +75,67 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;padding:2rem 3rem;display:fl
 
 /* ── SECTION BASE ── */
 section:not(#hero){padding:8rem 3rem}
-.s-label{font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:rgba(242,240,237,.25);margin-bottom:3.5rem}
+.s-label{font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:rgba(242,240,237,.4);margin-bottom:3.5rem}
 .s-title{font-size:clamp(2.6rem,5.5vw,4.6rem);font-weight:700;line-height:1.04;letter-spacing:-.02em}
-.s-title span{opacity:.32;font-weight:300}
-.s-desc{font-size:.85rem;font-weight:300;color:rgba(242,240,237,.45);line-height:1.95;max-width:420px}
+.s-title span{opacity:.45;font-weight:300}
+.s-desc{font-size:.85rem;font-weight:300;color:rgba(242,240,237,.65);line-height:1.95;max-width:420px}
 
 .divider{height:1px;background:linear-gradient(to right,transparent,rgba(242,240,237,.08),transparent);margin:0 3rem}
+
+/* ── CLIENTS MARQUEE ── */
+#clients{padding:6rem 3rem;border-bottom:1px solid rgba(242,240,237,.05);border-top:1px solid rgba(242,240,237,.05)}
+.clients-label{font-size:.6rem;letter-spacing:.45em;text-transform:uppercase;color:rgba(242,240,237,.4);text-align:center;margin-bottom:4rem}
+.clients-wrap{overflow:hidden;position:relative}
+.clients-wrap::before,.clients-wrap::after{content:'';position:absolute;top:0;bottom:0;width:140px;z-index:2;pointer-events:none}
+.clients-wrap::before{left:0;background:linear-gradient(to right,var(--black),transparent)}
+.clients-wrap::after{right:0;background:linear-gradient(to left,var(--black),transparent)}
+.clients-track{display:flex;align-items:center;width:max-content;animation:mq 35s linear infinite}
+.clients-track:hover{animation-play-state:paused}
+.client-item{display:flex;align-items:center;justify-content:center;padding:0 3.5rem;height:90px}
+.client-item img{
+  height:50px;max-width:170px;width:auto;object-fit:contain;
+  display:block;
+}
+
+/* ── LOADING INTRO ── */
+#loader{
+  position:fixed;inset:0;z-index:99999;
+  overflow:hidden;
+  pointer-events:none;
+}
+#loader-circle{
+  position:fixed;
+  border-radius:50%;
+  background:#ffffff;
+  width:300vmax;height:300vmax;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+}
+#loader-circle.shrink{
+  transition:width 1s cubic-bezier(.6,.05,.2,1), height 1s cubic-bezier(.6,.05,.2,1);
+  width:24px;height:24px;
+}
+#loader-circle.to-dot{
+  transition:transform .9s cubic-bezier(.4,0,.2,1), opacity .3s ease .7s;
+  transform:translate(var(--dot-x, 0px), var(--dot-y, 0px));
+  opacity:0;
+}
+#loader.done{display:none}
+
+/* the real "." at the end of the hero word — hidden until the loader dot arrives */
+.hero-title .real-dot{opacity:0;transition:opacity .25s ease}
+.hero-title .real-dot.show{opacity:1}
 
 /* ── ABOUT ── */
 #about{border-top:1px solid rgba(242,240,237,.05);position:relative}
 .about-grid{display:grid;grid-template-columns:1fr 1.3fr;gap:6rem;align-items:start}
-.about-text p{font-size:.92rem;font-weight:300;color:rgba(242,240,237,.6);line-height:2.05;margin-bottom:1.6rem}
-.about-text p:last-child{margin-bottom:0;color:rgba(242,240,237,.85);font-weight:400}
+.about-text p{font-size:.92rem;font-weight:300;color:rgba(242,240,237,.78);line-height:2.05;margin-bottom:1.6rem}
+.about-text p:last-child{margin-bottom:0;color:rgba(242,240,237,.95);font-weight:400}
 .about-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:2.5rem;margin-top:3rem;padding-top:3rem;border-top:1px solid rgba(242,240,237,.08)}
 .stat-num{font-size:2.6rem;font-weight:700;letter-spacing:-.02em}
-.stat-label{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;opacity:.35;margin-top:.5rem}
+.stat-label{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;opacity:.5;margin-top:.5rem}
 
 
-
-/* ── PARTNERS GRID (static, About/Clients section duplicate-style) ── */
-#partners{border-top:1px solid rgba(242,240,237,.05)}
-.partners-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:1px;
-  background:rgba(242,240,237,.06);
-  margin-top:5rem;
-  border:1px solid rgba(242,240,237,.06);
-}
-.partner-cell{
-  background:var(--black);
-  aspect-ratio:16/10;
-  display:flex;align-items:center;justify-content:center;
-  padding:2rem;
-  transition:background .4s ease;
-}
-.partner-cell:hover{background:#0d0d0d}
-.partner-cell img{
-  max-width:100%;max-height:100%;
-  width:auto;height:auto;
-  object-fit:contain;
-}
 
 /* ── SERVICES — single interactive block ── */
 #services{border-top:1px solid rgba(242,240,237,.05)}
@@ -163,8 +185,8 @@ section:not(#hero){padding:8rem 3rem}
 .contact-title{font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:700;line-height:1.04;margin-bottom:3rem;letter-spacing:-.02em;max-width:700px}
 .contact-title span{opacity:.3;font-weight:300}
 .c-methods{display:flex;flex-direction:column;gap:2rem;margin-top:1rem;max-width:500px}
-.c-method-label{font-size:.58rem;letter-spacing:.4em;text-transform:uppercase;opacity:.25;margin-bottom:.35rem}
-.c-method a,.c-method span{color:var(--white);text-decoration:none;font-size:.95rem;font-weight:300;opacity:.65;transition:opacity .3s}
+.c-method-label{font-size:.58rem;letter-spacing:.4em;text-transform:uppercase;opacity:.4;margin-bottom:.35rem}
+.c-method a,.c-method span{color:var(--white);text-decoration:none;font-size:.95rem;font-weight:300;opacity:.85;transition:opacity .3s}
 .c-method a:hover{opacity:1}
 
 /* ── FOOTER ── */
@@ -216,11 +238,15 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
   footer{padding:2rem 1.5rem;flex-direction:column;gap:1rem;text-align:center}
   .client-item{padding:0 2rem;height:70px}
   .client-item img{height:36px;max-width:130px}
-  .curtain-wrap{height:10vh}
 }
 </style>
 </head>
 <body>
+
+<!-- LOADING INTRO -->
+<div id="loader">
+  <div id="loader-circle"></div>
+</div>
 
 <!-- NAV -->
 <nav>
@@ -248,7 +274,7 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
   <div id="particles"></div>
 
   <div class="hero-content">
-    <h1 class="hero-title adaptive-logo" data-logo>bynunc<span class="ov" aria-hidden="true">bynunc</span></h1>
+    <h1 class="hero-title adaptive-logo" data-logo>bynunc<span class="real-dot" id="heroDot">.</span><span class="ov" aria-hidden="true">bynunc.</span></h1>
     <p class="hero-sub">We craft cinematic experiences that<br>define presence and drive impact.</p>
   </div>
 
@@ -279,6 +305,33 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
           <div class="stat-label">Countries — Talent Network</div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS MARQUEE -->
+<section id="clients">
+  <p class="clients-label rv">Trusted by</p>
+  <div class="clients-wrap">
+    <div class="clients-track" id="marquee">
+      <!-- set 1 -->
+      <div class="client-item"><img src="assets/logos/takamol.png" alt="Takamol"></div>
+      <div class="client-item"><img src="assets/logos/mashariq.png" alt="Mashariq"></div>
+      <div class="client-item"><img src="assets/logos/riyadh-season.png" alt="Riyadh Season"></div>
+      <div class="client-item"><img src="assets/logos/misk-schools.png" alt="Misk Schools"></div>
+      <div class="client-item"><img src="assets/logos/misk-global-forum.jpeg" alt="Misk Global Forum"></div>
+      <div class="client-item"><img src="assets/logos/leap.jpeg" alt="LEAP"></div>
+      <div class="client-item"><img src="assets/logos/world-defense-show.png" alt="World Defense Show"></div>
+      <div class="client-item"><img src="assets/logos/nhc.jpeg" alt="NHC"></div>
+      <!-- set 2 — duplicate for seamless loop -->
+      <div class="client-item"><img src="assets/logos/takamol.png" alt="Takamol"></div>
+      <div class="client-item"><img src="assets/logos/mashariq.png" alt="Mashariq"></div>
+      <div class="client-item"><img src="assets/logos/riyadh-season.png" alt="Riyadh Season"></div>
+      <div class="client-item"><img src="assets/logos/misk-schools.png" alt="Misk Schools"></div>
+      <div class="client-item"><img src="assets/logos/misk-global-forum.jpeg" alt="Misk Global Forum"></div>
+      <div class="client-item"><img src="assets/logos/leap.jpeg" alt="LEAP"></div>
+      <div class="client-item"><img src="assets/logos/world-defense-show.png" alt="World Defense Show"></div>
+      <div class="client-item"><img src="assets/logos/nhc.jpeg" alt="NHC"></div>
     </div>
   </div>
 </section>
@@ -369,6 +422,55 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
 </footer>
 
 <script>
+  /* ── LOADING INTRO ──
+     White circle covers screen, shrinks to a small dot at center,
+     pauses briefly, then travels to align exactly with the "."
+     at the end of the hero word "bynunc." — while the hero word
+     fades in at the same time. The traveling dot IS the final dot
+     (no duplicate dots). */
+  (function () {
+    const loader = document.getElementById('loader');
+    const circle = document.getElementById('loader-circle');
+    const heroTitle = document.querySelector('.hero-title');
+    const heroDot = document.getElementById('heroDot');
+
+    requestAnimationFrame(() => {
+      // Step 1 (0 - 1s): circle shrinks from full screen to a small dot at center
+      requestAnimationFrame(() => {
+        circle.classList.add('shrink');
+      });
+
+      // Step 2 (~1.3s, after a short pause settling at center):
+      // compute the target position (the hero's "." location),
+      // start the hero word fading in, and send the dot traveling.
+      setTimeout(() => {
+        const dotRect = heroDot.getBoundingClientRect();
+        const dotCenterX = dotRect.left + dotRect.width / 2;
+        const dotCenterY = dotRect.top + dotRect.height / 2;
+        const viewportCenterX = window.innerWidth / 2;
+        const viewportCenterY = window.innerHeight / 2;
+
+        circle.style.setProperty('--dot-x', (dotCenterX - viewportCenterX) + 'px');
+        circle.style.setProperty('--dot-y', (dotCenterY - viewportCenterY) + 'px');
+
+        heroTitle.classList.add('show');
+        circle.classList.add('to-dot');
+      }, 1300);
+
+      // Step 3 (~1.95s): as the traveling dot fades out at its destination,
+      // reveal the real "." so there is a seamless handoff (no double dots).
+      setTimeout(() => {
+        heroDot.classList.add('show');
+      }, 1950);
+
+      // Step 4 (~2.3s): remove loader from DOM entirely
+      setTimeout(() => {
+        loader.classList.add('done');
+      }, 2300);
+    });
+  })();
+
+
   /* ── PARTICLES ── */
   const pBox = document.getElementById('particles');
   for (let i = 0; i < 18; i++) {
@@ -432,14 +534,6 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
     }
   }, { passive: true });
 
-  /* ── FORM ── */
-  function sendForm(e) {
-    e.preventDefault();
-    const btn = e.target.querySelector('.c-submit');
-    btn.textContent = 'Message Sent ✓';
-    btn.style.opacity = '0.5';
-    btn.disabled = true;
-  }
 </script>
 </body>
 </html>
