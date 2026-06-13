@@ -89,6 +89,9 @@ section:not(#hero){padding:8rem 3rem}
 .clients-wrap::before,.clients-wrap::after{content:'';position:absolute;top:0;bottom:0;width:140px;z-index:2;pointer-events:none}
 .clients-wrap::before{left:0;background:linear-gradient(to right,var(--black),transparent)}
 .clients-wrap::after{right:0;background:linear-gradient(to left,var(--black),transparent)}
+@media (max-width:860px){
+  .clients-wrap::before,.clients-wrap::after{width:40px}
+}
 .clients-track{display:flex;align-items:center;width:max-content;animation:mq 35s linear infinite}
 .clients-track:hover{animation-play-state:paused}
 .client-item{display:flex;align-items:center;justify-content:center;padding:0 3.5rem;height:90px}
@@ -117,7 +120,7 @@ section:not(#hero){padding:8rem 3rem}
 }
 #loader-circle.to-dot{
   transition:transform .9s cubic-bezier(.4,0,.2,1), opacity .25s ease .75s;
-  transform:translate(var(--dot-x, 0px), var(--dot-y, 0px));
+  transform:translate(-50%,-50%) translate(var(--dot-x, 0px), var(--dot-y, 0px));
   opacity:0;
 }
 #loader.done{display:none}
@@ -146,51 +149,145 @@ section:not(#hero){padding:8rem 3rem}
 
 
 
-/* ── SERVICES — single interactive block ── */
+/* ── SERVICES — interactive 4-column grid with spotlight ── */
 #services{border-top:1px solid rgba(242,240,237,.05)}
-.svc-top{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-bottom:5rem;align-items:end}
-.svc-box{border:1px solid rgba(242,240,237,.08);padding:1rem 3rem}
-.svc-row{
-  padding:1.6rem 0;
-  border-bottom:1px solid rgba(242,240,237,.07);
-  font-size:clamp(1.6rem,4vw,3rem);
-  font-weight:600;
-  letter-spacing:-.01em;
-  color:rgba(242,240,237,.4);
-  transition:transform .45s cubic-bezier(.16,1,.3,1), color .45s ease, padding-left .45s cubic-bezier(.16,1,.3,1);
-  cursor:default;
-  transform-origin:left center;
-  display:block;
+.svc-top{display:grid;grid-template-columns:1fr 1fr;gap:4rem;margin-bottom:4rem;align-items:end}
+.svc-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:rgba(242,240,237,.06);
+  border:1px solid rgba(242,240,237,.06);
 }
-.svc-row:last-child{border-bottom:none}
-.svc-row .svc-idx{
+.svc-card{
+  position:relative;
+  background:rgba(20,20,22,.5);
+  backdrop-filter:blur(10px) saturate(140%);
+  -webkit-backdrop-filter:blur(10px) saturate(140%);
+  padding:2.2rem 1.8rem;
+  aspect-ratio:1/1;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  overflow:hidden;
+  cursor:default;
+  transition:transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s ease;
+}
+/* spotlight that follows the mouse */
+.svc-card::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle 180px at var(--mx,50%) var(--my,50%), rgba(242,240,237,.14), transparent 70%);
+  opacity:0;
+  transition:opacity .35s ease;
+  pointer-events:none;
+}
+.svc-card:hover::before{opacity:1}
+.svc-card:hover{
+  transform:scale(1.05);
+  box-shadow:0 20px 60px rgba(0,0,0,.45), 0 0 40px rgba(242,240,237,.06);
+  z-index:2;
+}
+.svc-idx{
   font-size:.55rem;
   letter-spacing:.3em;
-  opacity:.6;
+  opacity:.4;
   font-weight:400;
-  display:block;
-  margin-bottom:.6rem;
+  position:relative;
+  z-index:1;
 }
-.svc-row .svc-text{display:block}
-.svc-row .svc-desc{
-  display:block;
-  font-size:.42em;
+.svc-name{
+  font-size:clamp(1.05rem,1.6vw,1.45rem);
+  font-weight:600;
+  letter-spacing:-.01em;
+  line-height:1.2;
+  color:rgba(242,240,237,.75);
+  transition:color .35s ease;
+  position:relative;
+  z-index:1;
+}
+.svc-card:hover .svc-name{color:#ffffff}
+.svc-desc{
+  font-size:.74rem;
   font-weight:300;
-  letter-spacing:0;
-  opacity:.7;
-  margin-top:.5rem;
-  max-width:560px;
+  opacity:0;
+  max-height:0;
+  overflow:hidden;
   line-height:1.6;
+  color:rgba(242,240,237,.55);
+  transition:opacity .35s ease, max-height .35s ease, margin-top .35s ease;
+  position:relative;
+  z-index:1;
 }
-.svc-box:hover .svc-row{color:rgba(242,240,237,.22)}
-.svc-row:hover{
-  color:#ffffff;
-  transform:scale(1.05);
-  padding-left:1.5rem;
+.svc-card:hover .svc-desc{
+  opacity:1;
+  max-height:6rem;
+  margin-top:.6rem;
 }
 
 /* ── CONTACT ── */
 #contact{border-top:1px solid rgba(242,240,237,.05)}
+
+/* ── CINEMATIC TUNNEL — concentric rings around a small, always-pulsing
+   glowing dot fixed at the viewport center. As the user scrolls, the
+   rings expand/contract (a "diving through rings" feel) while the
+   central dot stays small, centered and gently glowing at all times. */
+#lens{
+  position:fixed;
+  top:50%;left:50%;
+  width:1px;height:1px;
+  pointer-events:none;
+  z-index:1;
+  opacity:0;
+  transition:opacity .6s ease;
+}
+#lens.show{opacity:1}
+
+#lens .ring{
+  position:absolute;
+  top:0;left:0;
+  border-radius:50%;
+  border:1px solid rgba(242,240,237,.07);
+  will-change:transform, opacity;
+}
+#lens .ring:nth-child(1){ width:220px; height:220px; margin:-110px 0 0 -110px; }
+#lens .ring:nth-child(2){ width:380px; height:380px; margin:-190px 0 0 -190px; }
+#lens .ring:nth-child(3){ width:560px; height:560px; margin:-280px 0 0 -280px; }
+#lens .ring:nth-child(4){ width:780px; height:780px; margin:-390px 0 0 -390px; }
+
+/* the small, always-on glowing core */
+#lens .core{
+  position:absolute;
+  top:0;left:0;
+  width:10px;height:10px;
+  margin:-5px 0 0 -5px;
+  border-radius:50%;
+  background:#f2f0ed;
+}
+#lens .core::before{
+  content:'';
+  position:absolute;
+  inset:-8px;
+  border-radius:50%;
+  background:rgba(242,240,237,.3);
+  filter:blur(6px);
+}
+#lens .core.beat{
+  animation:coreBeat 2.4s ease-in-out infinite;
+}
+#lens .core.beat::before{
+  animation:coreGlow 2.4s ease-in-out infinite;
+}
+@keyframes coreBeat{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.25)}
+}
+@keyframes coreGlow{
+  0%,100%{opacity:.5;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.6)}
+}
+
 .contact-title{font-size:clamp(2.8rem,5.5vw,4.8rem);font-weight:700;line-height:1.04;margin-bottom:3rem;letter-spacing:-.02em;max-width:700px}
 .contact-title span{opacity:.3;font-weight:300}
 .c-methods{display:flex;flex-direction:column;gap:2rem;margin-top:1rem;max-width:500px}
@@ -238,9 +335,9 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
   .about-stats{grid-template-columns:repeat(2,1fr);gap:1.5rem}
   .partners-grid{grid-template-columns:repeat(2,1fr)}
   .svc-top{grid-template-columns:1fr;gap:2.5rem}
-  .svc-box{padding:.5rem 1.5rem}
-  .svc-row{font-size:1.3rem;padding:1.2rem 0}
-  .svc-row .svc-desc{font-size:.6rem}
+  .svc-grid{grid-template-columns:repeat(2,1fr)}
+  .svc-card{aspect-ratio:auto;padding:1.6rem}
+  .svc-card:hover .svc-desc{max-height:8rem}
   #contact{grid-template-columns:1fr;gap:4rem;padding:6rem 1.5rem}
   section:not(#hero){padding:5rem 1.5rem}
   .divider{margin:0 1.5rem}
@@ -255,6 +352,15 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
 <!-- LOADING INTRO -->
 <div id="loader">
   <div id="loader-circle"></div>
+</div>
+
+<!-- AMBIENT LENS -->
+<div id="lens">
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="ring"></div>
+  <div class="core" id="lensCore"></div>
 </div>
 
 <!-- NAV -->
@@ -354,46 +460,62 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
     </div>
     <p class="s-desc rv">From exhibition floors to brand campaigns — we capture the stories that define your presence and outlast the moment.</p>
   </div>
-  <div class="svc-box rv">
-    <div class="svc-row">
+  <div class="svc-grid rv">
+    <div class="svc-card">
       <span class="svc-idx">01</span>
-      <span class="svc-text">Content Creation</span>
-      <span class="svc-desc">Crafting compelling stories that resonate with your audience.</span>
+      <div>
+        <div class="svc-name">Content Creation</div>
+        <div class="svc-desc">Crafting compelling stories that resonate with your audience.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">02</span>
-      <span class="svc-text">Social Media Management</span>
-      <span class="svc-desc">Strategic presence to ensure your brand stays at the forefront.</span>
+      <div>
+        <div class="svc-name">Social Media Management</div>
+        <div class="svc-desc">Strategic presence to ensure your brand stays at the forefront.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">03</span>
-      <span class="svc-text">Commercial Ads</span>
-      <span class="svc-desc">High-impact visuals designed to convert and captivate.</span>
+      <div>
+        <div class="svc-name">Commercial Ads</div>
+        <div class="svc-desc">High-impact visuals designed to convert and captivate.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">04</span>
-      <span class="svc-text">Documentaries</span>
-      <span class="svc-desc">In-depth storytelling with a cinematic edge.</span>
+      <div>
+        <div class="svc-name">Documentaries</div>
+        <div class="svc-desc">In-depth storytelling with a cinematic edge.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">05</span>
-      <span class="svc-text">Series / Short Films</span>
-      <span class="svc-desc">Artistic production for narrative-driven projects.</span>
+      <div>
+        <div class="svc-name">Series / Short Films</div>
+        <div class="svc-desc">Artistic production for narrative-driven projects.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">06</span>
-      <span class="svc-text">Videography &amp; Photography</span>
-      <span class="svc-desc">Precision-focused visual documentation for every occasion.</span>
+      <div>
+        <div class="svc-name">Videography &amp; Photography</div>
+        <div class="svc-desc">Precision-focused visual documentation for every occasion.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">07</span>
-      <span class="svc-text">Post Production</span>
-      <span class="svc-desc">Expert editing, color grading and motion that elevate raw footage into polished narratives.</span>
+      <div>
+        <div class="svc-name">Post Production</div>
+        <div class="svc-desc">Expert editing, color grading and motion that elevate raw footage into polished narratives.</div>
+      </div>
     </div>
-    <div class="svc-row">
+    <div class="svc-card">
       <span class="svc-idx">08</span>
-      <span class="svc-text">Event Coverage &amp; Conferences</span>
-      <span class="svc-desc">Full-scale media production for conferences, exhibitions and trade show activations.</span>
+      <div>
+        <div class="svc-name">Event Coverage &amp; Conferences</div>
+        <div class="svc-desc">Full-scale media production for conferences, exhibitions and trade show activations.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -547,6 +669,68 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(242,240,237,.05);display:fl
       if (navLogo) triggerReveal(navLogo);
     }
   }, { passive: true });
+
+  /* ── SERVICES SPOTLIGHT — soft light follows the mouse over each card ── */
+  document.querySelectorAll('.svc-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+
+  /* ── CINEMATIC TUNNEL ──
+     A small glowing dot stays fixed at the center of the viewport at
+     all times, pulsing gently and continuously. Around it, concentric
+     rings expand and fade as the user scrolls — creating the feel of
+     traveling through rings toward (and away from) the dot. The dot
+     itself never grows large; it stays small and centered throughout. */
+  const lens = document.getElementById('lens');
+  const rings = lens.querySelectorAll('.ring');
+  const lensCore = document.getElementById('lensCore');
+  const heroSection = document.getElementById('hero');
+  const contactSection = document.getElementById('contact');
+
+  // start the gentle pulse immediately and keep it running always
+  if (lensCore) lensCore.classList.add('beat');
+
+  function updateLens() {
+    const heroBottom = heroSection ? heroSection.offsetTop + heroSection.offsetHeight : 0;
+    const contactTop = contactSection ? contactSection.offsetTop + contactSection.offsetHeight * 0.3 : document.body.scrollHeight;
+    const totalRange = Math.max(1, contactTop - heroBottom);
+    const progress = Math.min(1, Math.max(0, (window.scrollY - heroBottom) / totalRange));
+
+    // overall visibility: fade in just after hero, stay visible through contact
+    const visibility = Math.min(1, Math.max(0, (window.scrollY - heroBottom + 200) / 300));
+    lens.style.opacity = visibility;
+    lens.classList.toggle('show', visibility > 0.02);
+
+    // each ring expands outward and fades as scroll progress increases,
+    // giving a "traveling through rings" sensation; staggered per ring
+    rings.forEach((ring, i) => {
+      const stagger = i * 0.18;
+      const local = Math.min(1, Math.max(0, (progress - stagger) / (1 - stagger)));
+      const scale = 0.4 + local * 1.3;
+      const opacity = (1 - local) * 0.7;
+      ring.style.transform = `scale(${scale})`;
+      ring.style.opacity = opacity;
+    });
+  }
+
+  window.addEventListener('scroll', updateLens, { passive: true });
+  window.addEventListener('resize', updateLens);
+  updateLens();
+
+  /* ── HAPTIC FEEDBACK — short vibration on contact link tap (mobile only) ── */
+  document.querySelectorAll('#contact .c-method a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (navigator.vibrate) {
+        navigator.vibrate(15);
+      }
+    });
+  });
 
 </script>
 </body>
