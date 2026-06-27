@@ -232,7 +232,25 @@ nav{z-index:500}
 .clients-wrap::before{left:0;background:linear-gradient(to right,var(--black),transparent)}
 .clients-wrap::after{right:0;background:linear-gradient(to left,var(--black),transparent)}
 @media (max-width:860px){
-  .clients-wrap::before,.clients-wrap::after{width:40px}
+  @media (max-width:860px){
+  .clients-wrap::before,.clients-wrap::after{display:none}
+  .clients-track{
+    animation:none;
+    width:100%;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:0;
+  }
+  .client-item{
+    padding:0 1.5rem;
+    height:80px;
+    width:33%;
+  }
+  .client-item img{
+    height:45px;
+    max-width:100px;
+  }
+}
 }
 .clients-track{display:flex;align-items:center;width:max-content;animation:mq 35s linear infinite}
 .clients-track:hover{animation-play-state:paused}
