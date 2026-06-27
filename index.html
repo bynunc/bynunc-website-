@@ -231,8 +231,7 @@ nav{z-index:500}
 .clients-wrap::before,.clients-wrap::after{content:'';position:absolute;top:0;bottom:0;width:140px;z-index:2;pointer-events:none}
 .clients-wrap::before{left:0;background:linear-gradient(to right,var(--black),transparent)}
 .clients-wrap::after{right:0;background:linear-gradient(to left,var(--black),transparent)}
-@media (max-width:860px){
-  @media (max-width:860px){
+@media (max-width:768px){
   .clients-wrap::before,.clients-wrap::after{display:none}
   .clients-track{
     animation:none;
@@ -250,7 +249,6 @@ nav{z-index:500}
     height:45px;
     max-width:100px;
   }
-}
 }
 .clients-track{display:flex;align-items:center;width:max-content;animation:mq 35s linear infinite}
 .clients-track:hover{animation-play-state:paused}
